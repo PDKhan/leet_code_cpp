@@ -1,25 +1,27 @@
 class Solution {
 public:
     bool isValid(string s) {
-        std::stack<char> stack;
+        stack<char> st;
 
-        for(int i = 0; i < s.length(); i++){
-            if(s[i] == ')'){
-                if(stack.empty() || stack.top() != '(')
+        for(char ch : s){
+            if(ch == ')'){
+                if(st.empty() || st.top() != '(')
                     return false;
-                stack.pop();
-            }else if(s[i] == '}'){
-                if(stack.empty() || stack.top() != '{')
+                st.pop();
+            }else if(ch == '}'){
+                if(st.empty() || st.top() != '{')
                     return false;
-                stack.pop();
-            }else if(s[i] == ']'){
-                if(stack.empty() || stack.top() != '[')
+                st.pop();
+            }else if(ch == ']'){
+                if(st.empty() || st.top() != '[')
                     return false;
-                stack.pop();
-            }else
-                stack.push(s[i]);
+                st.pop();
+            }else{
+                if(ch == '(' || ch == '{' || ch == '[')
+                    st.push(ch);
+            }
         }
 
-        return stack.empty();
+        return st.empty();
     }
 };
