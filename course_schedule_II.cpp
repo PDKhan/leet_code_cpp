@@ -1,44 +1,41 @@
 class Solution {
 public:
-    bool dfs(int curr, int numCourses, vector<vector<int>>& graph, vector<int>& visited, vector<int>& result){
-        if(visited[curr] == 1)
-            return false;
-        
-        if(visited[curr] == 2)
-            return true;
-        
-        visited[curr] = 1;
-
-        for(int i = 0; i <graph[curr].size(); i++){
-            if(!dfs(graph[curr][i], numCourses, graph, visited, result))
-                return false;
-        }
-
-        result.push_back(curr);
-
-        visited[curr] = 2;
-
-        return true;
-    }
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
         vector<vector<int>> graph(numCourses);
-        vector<int> visited(numCourses, 0);
-        vector<int> result;
+        vector<int> indegree(numCourses, 0);
 
         for(int i = 0; i < prerequisites.size(); i++){
-            int course = prerequisites[i][0];
             int pre = prerequisites[i][1];
+            int course = prerequisites[i][0];
 
             graph[pre].push_back(course);
+            indegree[course]++;
         }
 
+        queue<int> q;
+        
         for(int i = 0; i < numCourses; i++){
-            if(!dfs(i, numCourses, graph, visited, result))
-                return result;
+            if(indegree[i] == 0)
+                q.push(i);
         }
 
-        reverse(result.begin(), result.end());
+        vector<int> result;
 
-        return result;
+        while(!q.empty()){
+            int curr = q.front();
+            q.pop();
+
+            result.push_back(curr);
+
+            for(int next : graph[curr]){
+                if(--indegree[next] == 0)
+                    q.push(next);
+            }
+        }
+
+        if(result.size() == numCourses)
+            return result;
+        else
+            return {};
     }
 };
